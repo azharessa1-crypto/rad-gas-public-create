@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_file
+import sqlite3
 import sqlite3
 from datetime import datetime
 import urllib.parse
@@ -84,6 +85,12 @@ def daily_report():
         total_profit += o['price'] - cost
     conn.close()
     return render_template('daily_report.html', orders=orders, total_sales=total_sales, total_profit=total_profit, date=today)
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('IMG-20260831-WA9853.jpg')
 
+@app.route('/icon')
+def icon():
+    return send_file('IMG-20260831-WA9853.jpg')
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
