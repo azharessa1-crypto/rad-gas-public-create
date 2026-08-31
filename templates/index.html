@@ -1,0 +1,14 @@
+<h1>LPG Dashboard - Azhar</h1>
+<a href="/new_order"><button>NEW ORDER</button></a>
+<a href="/add_stock"><button>ADD STOCK</button></a>
+<a href="/daily_report"><button>DAILY REPORT</button></a>
+<hr>
+<h3>Stock:</h3>
+{% for s in stocks %}
+<p>{{ s.size }} : {{ s.qty }} bottles - R{{ s.price }}</p>
+{% endfor %}
+<hr>
+<h3>Recent Orders:</h3>
+{% for o in orders %}
+<p>{{ o.created_at }} - {{ o.customer_name }} - {{ o.size }} x{{ o.qty }} - R{{ o.price }} - {{ o.driver }}</p>
+{% endfor %}

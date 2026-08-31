@@ -1,0 +1,8 @@
+<h2>Daily Report {{ date }}</h2>
+<p>Total Sales: R{{ total_sales }}</p>
+<p>Total Profit: R{{ total_profit }}</p>
+<hr>
+{% for o in orders %}
+<p>{{ o.customer_name }} - {{ o.size }} x{{ o.qty }} - R{{ o.price }}</p>
+{% endfor %}
+<br><a href="/">Back</a>
