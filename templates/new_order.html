@@ -1,11 +1,63 @@
-<h2>New Order</h2>
-<form method="post">
-Name: <input name="customer_name" required><br><br>
-Phone: <input name="customer_phone" required><br><br>
-Address: <input name="address" required><br><br>
-Size: <select name="size"><option>5kg</option><option>9kg</option><option>14kg</option><option>19kg</option><option>48kg</option></select><br><br>
-Qty: <input type="number" name="qty" value="1" min="1"><br><br>
-Driver: <select name="driver"><option>Ziyaad</option><option>Driver 2</option></select><br><br>
-<button type="submit">Place Order & Send WhatsApp</button>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico">
+<title>Rads Gas - New Order</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f7f4;margin:0;padding:0}
+.header{background:#0e8a4c;color:white;padding:18px;text-align:center}
+.header img{width:85px;height:85px;border-radius:15px;background:white;padding:5px}
+.card{background:white;margin:15px;padding:20px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+input,select{width:100%;padding:14px;margin:8px 0 15px 0;border:1px solid #ddd;border-radius:10px;font-size:16px;box-sizing:border-box}
+button{background:#ff7a00;color:white;border:none;padding:16px;width:100%;border-radius:12px;font-size:18px;font-weight:bold}
+button:active{transform:scale(0.98)}
+label{font-weight:bold;color:#333}
+.back{display:block;text-align:center;margin:20px;color:#0e8a4c;text-decoration:none;font-weight:bold}
+h2{text-align:center;margin:5px 0 0 0}
+.sub{color:#666;text-align:center;font-size:14px;margin-bottom:15px}
+</style>
+</head>
+<body>
+<div class="header">
+<img src="/icon" alt="Rads Gas">
+<h2>RADS GAS</h2>
+<div style="font-size:13px;opacity:0.9">Fast • Safe • Reliable Gas Delivery</div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0;color:#0e8a4c">🔥 New Order</h3>
+<p class="sub">Cape Town Delivery</p>
+
+<form method="POST">
+<label>Name:</label>
+<input name="name" value="Azhar" required>
+
+<label>Phone:</label>
+<input name="phone" value="0746888347" required>
+
+<label>Address:</label>
+<input name="address" value="71 Daphne Cres" required>
+
+<label>Size:</label>
+<select name="size">
+<option>19kg</option>
+<option selected>48kg</option>
+</select>
+
+<label>Qty:</label>
+<input name="qty" type="number" value="1" min="1" required>
+
+<label>Driver:</label>
+<select name="driver">
+<option selected>Ziyaad</option>
+<option>Other</option>
+</select>
+
+<button type="submit">Place Order & Send WhatsApp 🚀</button>
 </form>
-<br><a href="/">Back</a>
+
+<a class="back" href="/">← Back to Dashboard</a>
+</div>
+</body>
+</html>
