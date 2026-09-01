@@ -47,7 +47,7 @@ let name = document.querySelector('input[name="customer"]')?.value || document.q
 let phone = document.querySelector('input[name="phone"]').value;
 let address = document.querySelector('input[name="address"]').value;
 
-fetch("https://script.google.com/macros/s/AKfycbzgd-B0DKlgHguTRxuxcp8T5nj7poSVNReSc41rKXSsSBAn_UndmLSlJURj3yJlZYD6Xg/exec", {
+fetch("https://script.google.com/macros/s/AKfycbxqcxzE02KY7aBidUESs6BKYBCsRqMRYiLjmlhjRbijxHmR5onYlW1WeuAL43MSCKuR3Q/exec",
 method:"POST",
 mode:"no-cors",
 body:JSON.stringify({name:name, phone:phone, address:address, size:size, price:qty})
