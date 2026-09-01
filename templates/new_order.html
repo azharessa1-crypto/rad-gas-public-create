@@ -4,62 +4,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rads Gas - New Order</title>
 <style>
-body{font-family:Arial,sans-serif;background:#f4f7f4;margin:0;padding:0}
-.header{background:#0e8a4c;color:white;padding:18px;text-align:center}
-.card{background:white;margin:15px;padding:20px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
-button{background:#ff7a00;color:white;padding:14px;width:100%;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer}
-a{color:#0e8a4c;text-decoration:none}
+body{font-family:Arial;background:#f4f4f4;margin:0}
+.header{background:#1a5c2a;color:white;padding:20px;text-align:center}
+.form-box{background:white;margin:20px;padding:20px;border-radius:12px}
+input,select{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc}
+button{background:#1a5c2a;color:white;padding:14px;width:100%;border:none;border-radius:8px;font-size:18px}
 </style>
 </head>
 <body>
-<div class="header"><h2>RADS GAS</h2><div>Fast • Safe • Reliable Gas Delivery</div></div>
-<div class="card">
-<h3>🔥 New Order</h3>
-<p>Cape Town Delivery</p>
-<form action="/place_order" method="POST">
-<label>Name</label>
-<input name="customer" placeholder="Azhar" required>
-<label>Phone</label>
-<input name="phone" placeholder="074..." required>
-<label>Address</label>
-<input name="address" placeholder="20 Poplar..." required>
-<label>Size</label>
-<select name="size">
-<option>5kg - R200</option>
-<option>9kg - R320</option>
-<option>14kg - R510</option>
-<option>19kg - R710</option>
-<option>48kg - R1750</option>
+<div class="header">
+<h2>RADS GAS</h2>
+<p>Fast • Safe • Reliable Gas Delivery</p>
+</div>
+<div class="form-box">
+<h3>🔥 New Order - Cape Town Delivery</h3>
+<form id="orderForm">
+<input name="name" id="name" placeholder="Name" required>
+<input name="phone" id="phone" placeholder="074..." required>
+<input name="address" id="address" placeholder="20 Poplar..." required>
+<label>Gas Size</label>
+<select name="size" id="size" required>
+<option value="5kg">5KG - R200</option>
+<option value="9kg">9KG - R320</option>
+<option value="14kg">14KG - R510</option>
+<option value="19kg">19KG - R710</option>
+<option value="48kg">48KG - R1750</option>
 </select>
-<label>Qty</label>
-<input type="number" name="qty" value="1" min="1">
-<br><br>
-
+<label>Quantity</label>
+<select name="qty" id="qty">
+<option>1</option><option>2</option><option>3</option>
+</select>
+<button type="submit">Place Order - Pay on Delivery</button>
 </form>
-<br>
-<a href="/">← Back to Dashboard</a>
+<p id="status"></p>
+</div>
+
 <script>
-function whatsappOrder(e){
-let size = document.querySelector('select[name="size"]')?.value || document.querySelector('select').value;
-let qty = document.querySelector('input[name="qty"]').value;
-let name = document.querySelector('input[name="customer"]')?.value || document.querySelector('input[name="customer_name"]')?.value;
-let phone = document.querySelector('input[name="phone"]').value;
-let address = document.querySelector('input[name="address"]').value;
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8avwSyrALLlpKXwJfDNdNuCWe_OFvcyy-nUVGquJjzo98UZnj-w938tic8OrC837nfw/exec";
+const prices = {"5kg":200,"9kg":320,"14kg":510,"19kg":710,"48kg":1750};
 
-fetch("https://script.google.com/macros/s/AKfycbxqcxzE02KY7aBidUESs6BKYBCsRqMRYiLjmlhjRbijxHmR5onYlW1WeuAL43MSCKuR3Q/exec",
-method:"POST",
-mode:"no-cors",
-body:JSON.stringify({name:name, phone:phone, address:address, size:size, price:qty})
-});
+document.getElementById('orderForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const address = document.getElementById('address').value;
+  const size = document.getElementById('size').value;
+  const qty = document.getElementById('qty').value;
+  const price = prices[size]*qty;
 
-let msg=`NEW RADS GAS ORDER%0A%0ASize: ${size}%0AQty: ${qty}%0AName: ${name}%0APhone: ${phone}%0AAddress: ${address}`;
-window.open(`https://wa.me/27746888347?text=${msg}`, '_blank');
-}
-document.querySelector('form').addEventListener('submit', function(e){
-e.preventDefault();
-whatsappOrder(e);
-setTimeout(()=>{e.target.submit();}, 1000);
+  document.getElementById('status').innerText = "Saving...";
+
+  // 1. Save to Google Sheet
+  try{
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      body: JSON.stringify({name, phone, address, size, price, qty})
+    });
+  }catch(err){ console.log(err); }
+
+  // 2. Save to Flask (so stock goes down)
+  try{
+    await fetch('/place_order', {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body: `name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}&size=${encodeURIComponent(size)}&qty=${encodeURIComponent(qty)}`
+    });
+  }catch(err){}
+
+  // 3. WhatsApp you
+  const msg = `NEW GAS ORDER%0AName: ${name}%0APhone: ${phone}%0AAddress: ${address}%0ASize: ${size}%0AQty: ${qty}%0APrice: R${price}`;
+  window.open(`https://wa.me/27746888347?text=${msg}`, '_blank');
+
+  // 4. Go to dashboard
+  window.location.href = "/";
 });
 </script>
 </body>
