@@ -33,47 +33,26 @@ h3{margin:5px 0;color:#0a7a0a}
 <div class="stock {{ 'has' if stock['48kg']>0 else 'zero' }}" style="grid-column: span 2;">48KG BIG<br>{{ stock['48kg'] }} Bottles - R1750</div>
 </div>
 
-<form action="/add_stock" method="POST" style="margin-top:10px">
-<select name="size"><option>5kg</option><option>9kg</option><option>14kg</option><option>19kg</option><option>48kg</option></select>
-<input type="number" name="qty" placeholder="How many bottles to add?" required>
-<button class="btn btn-green">+ ADD STOCK</button>
+<form method="post" action="/order" onsubmit="whatsappOrder(event)">
+<input type="text" name="name" placeholder="Customer Name" required>
+<input type="text" name="phone" placeholder="Customer Phone" required>
+<input type="text" name="address" placeholder="Delivery Address" required>
+<select name="size" id="sizeSelect" required>
+<option value="5kg">5KG - R200</option>
+<option value="9kg">9KG - R320</option>
+<option value="14kg">14KG - R510</option>
+<option value="19kg">19KG - R710</option>
+<option value="48kg">48KG - R1950</option>
+</select>
+<button type="submit">Place Order</button>
 </form>
-</div>
-
-<div class="card">
-<h3>➕ New Order - One Click</h3>
-<form action="/place_order" method="POST">
-<input name="customer" placeholder="Customer Name" required>
-<input name="phone" placeholder="WhatsApp Number (e.g. 2782...)" required>
-<input name="address" placeholder="Address - 71 Daphne Cres..." id="addr" required>
-<select name="size"><option>5kg - R200</option><option>9kg - R320</option><option>14kg - R510</option><option>19kg - R710</option><option>48kg - R1750</option></select>
-<button class="btn btn-green" type="submit">✅ PLACE ORDER</button>
-</form>
-<button class="btn btn-map" onclick="openMap()">📍 OPEN MAP FOR ADDRESS</button>
-</div>
-
-<div class="card">
-<h3>🚚 Today's Deliveries - {{ orders|length }}</h3>
-{% for o in orders %}
-<div class="order-item">
-<b>{{ o.customer }}</b> - {{ o.size }} - R{{ o.price }}<br>
-<small>{{ o.address }}</small><br>
-<a href="tel:{{ o.phone }}"><button class="btn btn-green" style="width:48%;display:inline-block">📞 CALL</button></a>
-<a href="https://wa.me/{{ o.phone }}?text=Hi%20{{ o.customer }},%20Rads%20Gas%20is%20on%20the%20way!%20🔥" target="_blank"><button class="btn btn-whatsapp" style="width:48%;display:inline-block">WHATSAPP</button></a>
-<a href="https://maps.google.com/?q={{ o.address }}" target="_blank"><button class="btn btn-map">🗺️ NAVIGATE</button></a>
-</div>
-{% endfor %}
-{% if orders|length==0 %}
-<p>No orders yet — Sunny day, time to post WhatsApp Status!</p>
-{% endif %}
-</div>
-
 <script>
-function openMap(){
-  var a=document.getElementById('addr').value;
-  if(a) window.open('https://maps.google.com/?q='+a);
-  else alert('Type address first');
+function whatsappOrder(e){
+let s=document.getElementById('sizeSelect').value;
+let n=e.target.name.value;
+let a=e.target.address.value;
+let p=e.target.phone.value;
+let msg=`NEW RADS GAS ORDER%0A%0ASize: ${s}%0AName: ${n}%0APhone: ${p}%0AAddress: ${a}`;
+window.open(`https://wa.me/27746888347?text=${msg}`, '_blank');
 }
 </script>
-</body>
-</html>
