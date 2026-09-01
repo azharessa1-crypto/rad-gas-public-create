@@ -1,14 +1,79 @@
-<h1>LPG Dashboard - Azhar</h1>
-<a href="/new_order"><button>NEW ORDER</button></a>
-<a href="/add_stock"><button>ADD STOCK</button></a>
-<a href="/daily_report"><button>DAILY REPORT</button></a>
-<hr>
-<h3>Stock:</h3>
-{% for s in stocks %}
-<p>{{ s.size }} : {{ s.qty }} bottles - R{{ s.price }}</p>
-{% endfor %}
-<hr>
-<h3>Recent Orders:</h3>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rads Gas - Cape Town</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f6f4}
+.header{background:#0a7a0a;color:white;padding:15px;text-align:center;font-size:22px;font-weight:bold;position:sticky;top:0;z-index:10}
+.card{background:white;margin:12px;padding:15px;border-radius:15px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.stock-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stock{padding:12px;border-radius:12px;text-align:center;font-weight:bold}
+.has{background:#d4edda;color:#155724;border:2px solid #0a7a0a}
+.zero{background:#f8d7da;color:#721c24;border:2px solid red}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:16px;margin-top:8px;cursor:pointer}
+.btn-green{background:#0a7a0a;color:white}
+.btn-whatsapp{background:#25D366;color:white}
+.btn-map{background:#007bff;color:white}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ccc;box-sizing:border-box}
+h3{margin:5px 0;color:#0a7a0a}
+.order-item{border-left:5px solid #0a7a0a;padding-left:10px;margin:10px 0;background:#f9f9f9;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="header">🔥 RADS GAS - CAPE TOWN LPG<br><small style="font-size:12px">Solo Boss Edition - Azhar</small></div>
+
+<div class="card">
+<h3>📦 Today's Stock</h3>
+<div class="stock-grid">
+<div class="stock {{ 'has' if stock['5kg']>0 else 'zero' }}">5KG<br>{{ stock['5kg'] }} Bottles<br>R200</div>
+<div class="stock {{ 'has' if stock['9kg']>0 else 'zero' }}">9KG<br>{{ stock['9kg'] }} Bottles<br>R320</div>
+<div class="stock {{ 'has' if stock['14kg']>0 else 'zero' }}">14KG<br>{{ stock['14kg'] }} Bottles<br>R510</div>
+<div class="stock {{ 'has' if stock['19kg']>0 else 'zero' }}">19KG<br>{{ stock['19kg'] }} Bottles<br>R710</div>
+<div class="stock {{ 'has' if stock['48kg']>0 else 'zero' }}" style="grid-column: span 2;">48KG BIG<br>{{ stock['48kg'] }} Bottles - R1750</div>
+</div>
+
+<form action="/add_stock" method="POST" style="margin-top:10px">
+<select name="size"><option>5kg</option><option>9kg</option><option>14kg</option><option>19kg</option><option>48kg</option></select>
+<input type="number" name="qty" placeholder="How many bottles to add?" required>
+<button class="btn btn-green">+ ADD STOCK</button>
+</form>
+</div>
+
+<div class="card">
+<h3>➕ New Order - One Click</h3>
+<form action="/place_order" method="POST">
+<input name="customer" placeholder="Customer Name" required>
+<input name="phone" placeholder="WhatsApp Number (e.g. 2782...)" required>
+<input name="address" placeholder="Address - 71 Daphne Cres..." id="addr" required>
+<select name="size"><option>5kg - R200</option><option>9kg - R320</option><option>14kg - R510</option><option>19kg - R710</option><option>48kg - R1750</option></select>
+<button class="btn btn-green" type="submit">✅ PLACE ORDER</button>
+</form>
+<button class="btn btn-map" onclick="openMap()">📍 OPEN MAP FOR ADDRESS</button>
+</div>
+
+<div class="card">
+<h3>🚚 Today's Deliveries - {{ orders|length }}</h3>
 {% for o in orders %}
-<p>{{ o.created_at }} - {{ o.customer_name }} - {{ o.size }} x{{ o.qty }} - R{{ o.price }} - {{ o.driver }}</p>
+<div class="order-item">
+<b>{{ o.customer }}</b> - {{ o.size }} - R{{ o.price }}<br>
+<small>{{ o.address }}</small><br>
+<a href="tel:{{ o.phone }}"><button class="btn btn-green" style="width:48%;display:inline-block">📞 CALL</button></a>
+<a href="https://wa.me/{{ o.phone }}?text=Hi%20{{ o.customer }},%20Rads%20Gas%20is%20on%20the%20way!%20🔥" target="_blank"><button class="btn btn-whatsapp" style="width:48%;display:inline-block">WHATSAPP</button></a>
+<a href="https://maps.google.com/?q={{ o.address }}" target="_blank"><button class="btn btn-map">🗺️ NAVIGATE</button></a>
+</div>
 {% endfor %}
+{% if orders|length==0 %}
+<p>No orders yet — Sunny day, time to post WhatsApp Status!</p>
+{% endif %}
+</div>
+
+<script>
+function openMap(){
+  var a=document.getElementById('addr').value;
+  if(a) window.open('https://maps.google.com/?q='+a);
+  else alert('Type address first');
+}
+</script>
+</body>
+</html>
