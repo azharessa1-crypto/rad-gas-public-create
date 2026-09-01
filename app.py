@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import os
 
-app = Flask(__name__)
-
+app = Flask(__name__, static_folder='.', static_url_path='')
 # Simple in-memory - perfect for Solo Boss
 stock = {"5kg": 10, "9kg": 10, "14kg": 5, "19kg": 5, "48kg": 3}
 orders = []
