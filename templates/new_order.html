@@ -35,10 +35,32 @@ a{color:#0e8a4c;text-decoration:none}
 <label>Qty</label>
 <input type="number" name="qty" value="1" min="1">
 <br><br>
-var sheet = SpreadsheetApp.openById('PASTE_YOUR_SHEET_ID_HERE').getActiveSheet();
+
 </form>
 <br>
 <a href="/">← Back to Dashboard</a>
-</div>
+<script>
+function whatsappOrder(e){
+let size = document.querySelector('select[name="size"]')?.value || document.querySelector('select').value;
+let qty = document.querySelector('input[name="qty"]').value;
+let name = document.querySelector('input[name="customer"]')?.value || document.querySelector('input[name="customer_name"]')?.value;
+let phone = document.querySelector('input[name="phone"]').value;
+let address = document.querySelector('input[name="address"]').value;
+
+fetch("https://script.google.com/macros/s/AKfycbzgd-B0DKlgHguTRxuxcp8T5nj7poSVNReSc41rKXSsSBAn_UndmLSlJURj3yJlZYD6Xg/exec", {
+method:"POST",
+mode:"no-cors",
+body:JSON.stringify({name:name, phone:phone, address:address, size:size, price:qty})
+});
+
+let msg=`NEW RADS GAS ORDER%0A%0ASize: ${size}%0AQty: ${qty}%0AName: ${name}%0APhone: ${phone}%0AAddress: ${address}`;
+window.open(`https://wa.me/27746888347?text=${msg}`, '_blank');
+}
+document.querySelector('form').addEventListener('submit', function(e){
+e.preventDefault();
+whatsappOrder(e);
+setTimeout(()=>{e.target.submit();}, 1000);
+});
+</script>
 </body>
 </html>
