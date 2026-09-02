@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, redirect
 import os
+import requests
 
 app = Flask(__name__, static_folder='.', static_url_path='')
+
+GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw6vQiq932xj6FgwsTiNK5YHu5ICI07n9X2VLutSIe5gy3bk0b3XFWcZg26-ZnsvOWUEA/exec"
+
 stock = {"5kg": 10, "9kg": 10, "14kg": 5, "19kg": 5, "48kg": 3}
 orders = []
 prices = {"5kg": 200, "9kg": 320, "14kg": 510, "19kg": 710, "48kg": 1750}
@@ -39,6 +43,19 @@ def place_order():
             "qty": qty,
             "price": prices.get(size,0)
         })
+        # SEND TO GOOGLE SHEET
+        try:
+            requests.get(GOOGLE_SHEET_URL, params={
+                "name": name,
+                "phone": phone,
+                "address": address,
+                "size": size,
+                "price": prices.get(size,0),
+                "qty": qty
+            }, timeout=10)
+        except Exception as e:
+            print("Sheet error:", e)
+
     return redirect('/')
 
 @app.route('/add_stock', methods=['POST'])
